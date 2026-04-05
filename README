@@ -1,0 +1,5 @@
+// ok we have started our application building ai study space in 
+// server setup and mongodb connected successFully
+// we will try to break out project in smaller smaller chunks we wont think about making it completely we will do it by adding feature 
+
+// now create the user model first of all and the controller
