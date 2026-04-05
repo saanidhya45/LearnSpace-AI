@@ -4,6 +4,7 @@ import connectMongoDb from "./config/connection.js";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/user.routes.js";
 import RoomRouter from "./routes/room.routes.js";
+import cors from "cors"
 const app = express();
 
 configDotenv()
@@ -13,10 +14,15 @@ const port = process.env.port
 // connect MongoDb
 // connectMongoDb().then(()=> console.log("mongo db connected"))
 
-app.use(cookieParser());
 app.use(express.json());
+app.use(cors({
+    origin: "http://localhost:5173", 
+    credentials: true
+}))
+app.use(cookieParser());
 app.use("/api/auth/", authRouter);
 app.use("/api/room/", RoomRouter)
+
 
 app.listen(port, ()=> console.log(`server started at port ${port}`));
 

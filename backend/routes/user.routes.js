@@ -1,5 +1,6 @@
 import express from "express";
-import { UserLoginController, userRegisterController } from "../controller/user.controller.js";
+import { userGetMeController, UserLoginController, userRegisterController } from "../controller/user.controller.js";
+import { jwtAuthenticator } from "../config/jwtAuth.js";
 const authRouter = express.Router();
 
 
@@ -14,6 +15,16 @@ authRouter
 
 authRouter
 .route("/login").post(UserLoginController)
+
+
+/**
+ * @route /api/auth/getMe
+ * @description get current logged in user data 
+ * @protected
+ */
+
+authRouter
+.route("/getMe").get(jwtAuthenticator, userGetMeController)
 
 
 export default authRouter
