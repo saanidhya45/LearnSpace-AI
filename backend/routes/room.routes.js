@@ -5,6 +5,7 @@ import {
   userRoomDeleteController,
   userRoomJoiningController,
   userRoomsController,
+  userJoinedRoomController
 } from "../controller/room.controller.js";
 
 const RoomRouter = express.Router();
@@ -44,4 +45,13 @@ RoomRouter.route("/").get(jwtAuthenticator, userRoomsController);
 
 RoomRouter.route("/:roomId").delete(jwtAuthenticator, userRoomDeleteController);
 
+
+/**
+ * @route get /api/room/my-room
+ * @description a user can access the room that he / she joined recently however a user can me in multiple room but actually we need the last one he/she joined
+ * @access private
+ */
+
+
+RoomRouter.route("/my-room").get(jwtAuthenticator, userJoinedRoomController)
 export default RoomRouter;

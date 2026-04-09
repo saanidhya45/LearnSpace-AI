@@ -1,6 +1,7 @@
 import StudyRoomModel from "../models/room.model.js";
 
 const userRoomCreateController = async (req, res) => {
+            console.log('room got hit');
     try {
 
         const {name} = req.body;
@@ -23,6 +24,7 @@ const userRoomCreateController = async (req, res) => {
         })
 
         return res.status(201).json({
+            success : true,
             msg : "room created successFully",
             room
         })
@@ -30,6 +32,7 @@ const userRoomCreateController = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({
+            success : false,
             msg : "internal server error"
         })
     }
@@ -37,6 +40,7 @@ const userRoomCreateController = async (req, res) => {
 
 const userRoomJoiningController = async (req, res) => {
     try {
+
         const roomId = req.params.roomId;
         const id = req.user.id
 
@@ -44,6 +48,7 @@ const userRoomJoiningController = async (req, res) => {
          const room = await StudyRoomModel.findById(roomId)
          if(!room){
             return res.status(404).json({
+                success : false,
                 msg : "error"
             })
          }
@@ -52,8 +57,10 @@ const userRoomJoiningController = async (req, res) => {
             );
 
             if (isMember) {
-                return res.status(400).json({
-                    msg: "user already exist in room"
+                return res.status(200).json({
+                    success : true,
+                    msg: "user already exist in room",
+                    UpdatedRoom : room
                 });
 
             }
@@ -61,6 +68,7 @@ const userRoomJoiningController = async (req, res) => {
               await room.save();
 
               return res.status(200).json({
+                 success: true,
                  msg : "user joined room successFully",
                  UpdatedRoom : room
               })
@@ -68,6 +76,7 @@ const userRoomJoiningController = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({
+            success : false,
             msg : "internal server error"
         })
     }
@@ -122,4 +131,31 @@ const userRoomDeleteController = async (req, res) => {
     }
 }
 
-export  {userRoomCreateController, userRoomJoiningController, userRoomsController,userRoomDeleteController}
+const userJoinedRoomController = async (req, res) => {
+    try {
+        console.log("api hit")
+        const {username, id} = req.user;
+        // check if this user has been a part of any of the room or not
+        const room = await StudyRoomModel.findOne({
+        members: id
+        }).sort({ updatedAt: -1 });
+
+        if(!room){
+            return res.status(404).json({
+                success : false,
+                msg : "user is not present in any of the room"
+            })
+        }
+
+        return res.status(200).json({
+            success : true,
+            msg : "room found successFully",
+            room,
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({msg : "internal server error"})
+    }
+}
+
+export  {userRoomCreateController, userRoomJoiningController, userRoomsController,userRoomDeleteController,userJoinedRoomController}
